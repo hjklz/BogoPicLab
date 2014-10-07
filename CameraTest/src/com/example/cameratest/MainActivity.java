@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
 		// TODO: Create an intent with the action
 		// MediaStore.ACTION_IMAGE_CAPTURE
 		
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				
 		// ComponentName cn = new ComponentName("es.softwareprocess.bogopicgen",
 		// "es.softwareprocess.bogopicgen.BogoPicGenActivity");
 		// ComponentName cn = new ComponentName("com.android.camera",
@@ -67,8 +69,12 @@ public class MainActivity extends Activity {
 
 		// TODO: Put in the intent in the tag MediaStore.EXTRA_OUTPUT the URI
 		
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+		
 		// TODO: Start the activity (expecting a result), with the code
 		// CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
+		
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 		
 	}
 
@@ -82,6 +88,23 @@ public class MainActivity extends Activity {
 		//		button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
 		// When the result is CANCELLED, set text "Photo canceled" in the status
 		// Otherwise, set text "Not sure what happened!" with the resultCode
+		
+		TextView tv = (TextView) findViewById(R.id.status);
+		
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
+			if (resultCode == RESULT_OK){
+				tv.setText("Photo OK!");
+				if (data!= null && data.hasExtra("message")) {
+					tv.setText(tv.getText() + data.getStringExtra("message"));
+				}
+				ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
+				button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
+			} else if (resultCode == RESULT_CANCELED) {
+				tv.setText("Photo canceled!");
+			} else {
+				tv.setText("Not sure what happened! Code:" + resultCode);
+			}
+		}
 		
 	}
 }
